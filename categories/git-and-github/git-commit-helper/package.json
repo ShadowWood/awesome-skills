@@ -1,0 +1,12 @@
+{
+  "name": "git-commit-helper",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reference package.json for Node/TS-based skills. Delete this file if the skill is Python-only.",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^2.0.0"
+  }
+}
