@@ -4,7 +4,7 @@ git-commit-helper — analyze staged git changes and propose a
 Conventional Commits–style commit message.
 
 Usage:
-    python scripts/git_commit_helper.py [--llm] [--diff DIFF_FILE]
+    python scripts/git_commit_helper.py [--llm] [--breaking] [--diff DIFF_FILE]
 
 Output (stdout, exit 0):
     {
@@ -316,6 +316,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Use an LLM (OpenAI) to generate the commit body",
     )
     parser.add_argument(
+        "--breaking",
+        action="store_true",
+        help="Force the commit to be marked as a breaking change",
+    )
+    parser.add_argument(
         "--diff",
         metavar="DIFF",
         default=None,
@@ -396,6 +401,7 @@ def generate_commit_message(
     diff_text: str,
     cwd: str | None = None,
     use_llm: bool = False,
+    force_breaking: bool = False,
 ) -> dict:
     """
     Generate a commit message dict from the staged diff.
@@ -405,6 +411,7 @@ def generate_commit_message(
         diff_text: git diff --cached full output (truncated per file).
         cwd: working directory for git commands.
         use_llm: whether to try LLM body generation.
+        force_breaking: if True, override heuristic detection and mark as breaking.
 
     Returns:
         dict with keys: type, scope, subject, breaking, body, raw_diff.
@@ -423,7 +430,7 @@ def generate_commit_message(
     commit_type = infer_type_from_paths(files, diff_text=diff_text)
     scope = infer_scope(files)
     subject = infer_subject(diff_text, files, commit_type)
-    breaking = detect_breaking_changes(diff_text)
+    breaking = force_breaking or detect_breaking_changes(diff_text)
 
     commit_json = {
         "type": commit_type,
@@ -488,6 +495,7 @@ def main(argv: list[str] | None = None) -> None:
         diff_text=diff_text,
         cwd=cwd,
         use_llm=args.llm,
+        force_breaking=args.breaking,
     )
 
     print(json.dumps(commit, indent=2))

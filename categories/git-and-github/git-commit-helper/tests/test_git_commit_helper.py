@@ -201,3 +201,23 @@ index 0000000..abc1234
     assert commit["scope"] in ("auth", "src", ""), f"Unexpected scope: {commit['scope']}"
     assert commit["breaking"] is False
     assert "raw_diff" in commit
+
+
+def test_breaking_flag_force_breaking(tmp_path) -> None:
+    """--breaking flag should force breaking=True even without heuristic match."""
+    repo = _init_repo(tmp_path)
+
+    # Add a new file (no removed symbols, so heuristic returns False)
+    src = os.path.join(repo, "src", "feature.py")
+    os.makedirs(os.path.dirname(src))
+    with open(src, "w") as f:
+        f.write("def new_func():\n")
+        f.write("    return 42\n")
+    _git(repo, "add", "src/feature.py")
+
+    # Run with --breaking flag
+    result = _run_script(repo, "--breaking")
+    assert result.returncode == 0, f"Script failed: {result.stderr}"
+    commit = json.loads(result.stdout)
+    assert commit["type"] == "feat"
+    assert commit["breaking"] is True, f"Expected breaking=True with --breaking flag, got {commit}"
