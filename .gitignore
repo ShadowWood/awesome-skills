@@ -1,0 +1,54 @@
+# === Repo-specific ===
+# issues-draft/ is a local-only staging area. Each *.md is published to GitHub
+# Issues via `gh issue create -F <file>`; agents then read the issues through
+# the GitHub API, not from this directory.
+issues-draft/
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.venv/
+venv/
+env/
+ENV/
+
+# === Node / TS ===
+node_modules/
+dist/
+build/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+coverage/
+.npm/
+.pnpm-store/
+
+# === Environment / Secrets ===
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# === IDE / Editor ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === OS ===
+.DS_Store
+Thumbs.db
+Desktop.ini

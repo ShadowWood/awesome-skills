@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Contributing guide
+    url: https://github.com/cysic-labs/awesome-skills/blob/main/CONTRIBUTING.md
+    about: Read this before proposing a new skill or filing other issues.

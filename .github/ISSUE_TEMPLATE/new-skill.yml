@@ -1,0 +1,86 @@
+name: New skill proposal
+description: Propose a new skill for the cyhost ecosystem.
+title: "[Skill] <skill-name>"
+labels: ["skill"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md) before opening this issue.
+        Each accepted skill becomes a directory under `skills/<category>/<name>/`.
+
+  - type: input
+    id: skill_name
+    attributes:
+      label: Skill name (kebab-case)
+      description: Lowercase, ≤64 chars, must be unique in the repo.
+      placeholder: git-commit-helper
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - git-and-github
+        - coding-and-ide
+        - browser-automation
+        - web-frontend
+        - devops-cloud
+        - productivity
+        - data-analytics
+        - pdf-documents
+        - communication
+        - search-research
+        - cli-utilities
+    validations:
+      required: true
+
+  - type: textarea
+    id: what_it_does
+    attributes:
+      label: What it does
+      description: One paragraph. Be specific, avoid marketing.
+    validations:
+      required: true
+
+  - type: textarea
+    id: when_to_trigger
+    attributes:
+      label: When the agent should use it
+      description: Concrete trigger scenarios / user phrases.
+      placeholder: |
+        - When the user asks to "generate a commit message"
+        - When `git diff --cached` has staged changes
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation_notes
+    attributes:
+      label: Implementation notes
+      description: Tech stack, key libraries, edge cases, security concerns.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: The PR is mergeable when all checks pass.
+      value: |
+        - [ ] Passes `python scripts/validate-skill.py skills/<category>/<name>`
+        - [ ] `SKILL.md` ≤ 500 lines and has a clear `description`
+        - [ ] `scripts/*` each have matching tests under `tests/` (happy + failure path)
+        - [ ] `pytest -q` (or `npm test`) passes locally
+        - [ ] No tests hit the public internet
+        - [ ] PR template checklist complete
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Inspiration, similar skills, docs, links.

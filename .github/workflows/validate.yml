@@ -1,0 +1,99 @@
+name: Validate skills
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Structure & tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install validator dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Validate all skills (structure + frontmatter + script↔test mapping)
+        run: python scripts/validate-skill.py --all
+
+      - name: Discover Python skills
+        id: discover_python
+        shell: bash
+        run: |
+          set -euo pipefail
+          dirs=()
+          while IFS= read -r d; do
+            dirs+=("$d")
+          done < <(find skills -mindepth 2 -maxdepth 2 -type d -name "*" | sort)
+          py_dirs=()
+          for d in "${dirs[@]}"; do
+            if [[ -f "$d/requirements.txt" && -d "$d/tests" ]]; then
+              py_dirs+=("$d")
+            fi
+          done
+          # Always include SKILL_TEMPLATE so the template itself stays valid.
+          if [[ -f "SKILL_TEMPLATE/requirements.txt" && -d "SKILL_TEMPLATE/tests" ]]; then
+            py_dirs+=("SKILL_TEMPLATE")
+          fi
+          printf "dirs<<EOF\n%s\nEOF\n" "$(printf '%s\n' "${py_dirs[@]}")" >> "$GITHUB_OUTPUT"
+
+      - name: Run Python skill tests
+        if: steps.discover_python.outputs.dirs != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          failed=0
+          while IFS= read -r d; do
+            [[ -z "$d" ]] && continue
+            echo "::group::pytest $d"
+            python -m pip install -r "$d/requirements.txt"
+            (cd "$d" && pytest -q) || failed=1
+            echo "::endgroup::"
+          done <<< "${{ steps.discover_python.outputs.dirs }}"
+          exit "$failed"
+
+      - name: Discover Node skills
+        id: discover_node
+        shell: bash
+        run: |
+          set -euo pipefail
+          node_dirs=()
+          while IFS= read -r d; do
+            if [[ -f "$d/package.json" && -d "$d/tests" && ! -f "$d/requirements.txt" ]]; then
+              node_dirs+=("$d")
+            fi
+          done < <(find skills -mindepth 2 -maxdepth 2 -type d -name "*" | sort)
+          printf "dirs<<EOF\n%s\nEOF\n" "$(printf '%s\n' "${node_dirs[@]}")" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node
+        if: steps.discover_node.outputs.dirs != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run Node skill tests
+        if: steps.discover_node.outputs.dirs != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          failed=0
+          while IFS= read -r d; do
+            [[ -z "$d" ]] && continue
+            echo "::group::npm test $d"
+            (cd "$d" && npm install --no-audit --no-fund && npm test) || failed=1
+            echo "::endgroup::"
+          done <<< "${{ steps.discover_node.outputs.dirs }}"
+          exit "$failed"
