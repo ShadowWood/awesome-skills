@@ -1,6 +1,8 @@
 # Categories
 
-This file is the canonical taxonomy for cyhost skills. New skills MUST land under one of these directories. Adding a new category requires a PR that updates this file, the root [README.md](../README.md), and the validator's allow-list in [scripts/validate-skill.py](../scripts/validate-skill.py).
+Every accepted skill lives under `categories/<category-slug>/<skill-name>/`. This file is the canonical taxonomy. Adding a new category requires a PR that updates this file, the root [README.md](../README.md), and the validator's allow-list in [scripts/validate-skill.py](../scripts/validate-skill.py).
+
+## Taxonomy
 
 | Slug                  | Description                                                                                  |
 | --------------------- | -------------------------------------------------------------------------------------------- |
@@ -19,7 +21,7 @@ This file is the canonical taxonomy for cyhost skills. New skills MUST land unde
 ## Naming rules
 
 - Category slugs are lowercase, hyphen-separated, ASCII.
-- Skill slugs follow the same rule and must be unique across the entire `skills/` tree.
+- Skill slugs follow the same rule and must be unique across the entire `categories/` tree.
 
 ## Adding to a category
 
@@ -27,4 +29,4 @@ This file is the canonical taxonomy for cyhost skills. New skills MUST land unde
 ./scripts/new-skill.sh <category-slug> <skill-name>
 ```
 
-The scaffold script refuses unknown category slugs.
+The scaffold script refuses unknown category slugs. After implementing the skill, run `python scripts/list-skills.py --update-readme` to refresh the per-category counts in the root README.

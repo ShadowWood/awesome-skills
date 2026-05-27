@@ -60,7 +60,7 @@ if [[ ! "$skill_name" =~ ^[a-z][a-z0-9-]{0,63}$ ]]; then
   exit 65
 fi
 
-dest="${REPO_ROOT}/skills/${category}/${skill_name}"
+dest="${REPO_ROOT}/categories/${category}/${skill_name}"
 if [[ -e "$dest" ]]; then
   echo "error: ${dest} already exists" >&2
   exit 66

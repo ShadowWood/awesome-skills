@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         Read [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md) before opening this issue.
-        Each accepted skill becomes a directory under `skills/<category>/<name>/`.
+        Each accepted skill becomes a directory under `categories/<category>/<name>/`.
 
   - type: input
     id: skill_name
@@ -70,7 +70,7 @@ body:
       label: Acceptance criteria
       description: The PR is mergeable when all checks pass.
       value: |
-        - [ ] Passes `python scripts/validate-skill.py skills/<category>/<name>`
+        - [ ] Passes `python scripts/validate-skill.py categories/<category>/<name>`
         - [ ] `SKILL.md` ≤ 500 lines and has a clear `description`
         - [ ] `scripts/*` each have matching tests under `tests/` (happy + failure path)
         - [ ] `pytest -q` (or `npm test`) passes locally

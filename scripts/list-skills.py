@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SKILLS_ROOT = REPO_ROOT / "skills"
+CATEGORIES_ROOT = REPO_ROOT / "categories"
 README = REPO_ROOT / "README.md"
 
 CATEGORY_LABELS = {
@@ -36,10 +36,10 @@ END_MARK = "<!-- skills:auto:end -->"
 
 def collect() -> dict[str, list[str]]:
     result: dict[str, list[str]] = {cat: [] for cat in CATEGORY_LABELS}
-    if not SKILLS_ROOT.exists():
+    if not CATEGORIES_ROOT.exists():
         return result
-    for category_dir in sorted(SKILLS_ROOT.iterdir()):
-        if not category_dir.is_dir():
+    for category_dir in sorted(CATEGORIES_ROOT.iterdir()):
+        if not category_dir.is_dir() or category_dir.name.startswith("."):
             continue
         cat = category_dir.name
         if cat not in result:
@@ -57,7 +57,7 @@ def render_table(data: dict[str, list[str]]) -> str:
     for cat, label in CATEGORY_LABELS.items():
         skills = data.get(cat, [])
         names = ", ".join(f"`{n}`" for n in skills) if skills else "_none yet_"
-        link = f"[{label}](skills/{cat}/)"
+        link = f"[{label}](categories/{cat}/)"
         rows.append(f"| {link} | {names} | {len(skills)} |")
     return "\n".join(rows)
 

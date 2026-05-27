@@ -35,11 +35,14 @@ jobs:
         run: |
           set -euo pipefail
           dirs=()
-          while IFS= read -r d; do
-            dirs+=("$d")
-          done < <(find skills -mindepth 2 -maxdepth 2 -type d -name "*" | sort)
+          if [[ -d categories ]]; then
+            while IFS= read -r d; do
+              dirs+=("$d")
+            done < <(find categories -mindepth 2 -maxdepth 2 -type d -name "*" | sort)
+          fi
           py_dirs=()
-          for d in "${dirs[@]}"; do
+          for d in "${dirs[@]:-}"; do
+            [[ -z "$d" ]] && continue
             if [[ -f "$d/requirements.txt" && -d "$d/tests" ]]; then
               py_dirs+=("$d")
             fi
@@ -48,7 +51,7 @@ jobs:
           if [[ -f "SKILL_TEMPLATE/requirements.txt" && -d "SKILL_TEMPLATE/tests" ]]; then
             py_dirs+=("SKILL_TEMPLATE")
           fi
-          printf "dirs<<EOF\n%s\nEOF\n" "$(printf '%s\n' "${py_dirs[@]}")" >> "$GITHUB_OUTPUT"
+          printf "dirs<<EOF\n%s\nEOF\n" "$(printf '%s\n' "${py_dirs[@]:-}")" >> "$GITHUB_OUTPUT"
 
       - name: Run Python skill tests
         if: steps.discover_python.outputs.dirs != ''
@@ -71,12 +74,14 @@ jobs:
         run: |
           set -euo pipefail
           node_dirs=()
-          while IFS= read -r d; do
-            if [[ -f "$d/package.json" && -d "$d/tests" && ! -f "$d/requirements.txt" ]]; then
-              node_dirs+=("$d")
-            fi
-          done < <(find skills -mindepth 2 -maxdepth 2 -type d -name "*" | sort)
-          printf "dirs<<EOF\n%s\nEOF\n" "$(printf '%s\n' "${node_dirs[@]}")" >> "$GITHUB_OUTPUT"
+          if [[ -d categories ]]; then
+            while IFS= read -r d; do
+              if [[ -f "$d/package.json" && -d "$d/tests" && ! -f "$d/requirements.txt" ]]; then
+                node_dirs+=("$d")
+              fi
+            done < <(find categories -mindepth 2 -maxdepth 2 -type d -name "*" | sort)
+          fi
+          printf "dirs<<EOF\n%s\nEOF\n" "$(printf '%s\n' "${node_dirs[@]:-}")" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node
         if: steps.discover_node.outputs.dirs != ''

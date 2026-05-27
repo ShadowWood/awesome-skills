@@ -43,8 +43,8 @@ Priority on lookup: **Workspace > Global**.
    ```
 4. Implement the skill, write tests, validate locally:
    ```bash
-   python scripts/validate-skill.py skills/<category>/<skill-name>
-   cd skills/<category>/<skill-name> && pytest -q   # or npm test
+   python scripts/validate-skill.py categories/<category>/<skill-name>
+   cd categories/<category>/<skill-name> && pytest -q   # or npm test
    ```
 5. Open a PR that closes the corresponding issue.
 
@@ -57,8 +57,11 @@ awesome-skills/
 ├── LICENSE                   # MIT
 ├── .gitignore
 ├── SKILL_TEMPLATE/           # Scaffold for new skills
-├── skills/                   # All accepted skills, grouped by category
-├── categories/               # Per-category indexes
+├── categories/               # All accepted skills, grouped by category
+│   ├── README.md             # Taxonomy + per-category index
+│   ├── git-and-github/
+│   ├── coding-and-ide/
+│   └── ...                   # 11 categories total
 ├── scripts/                  # Repo-level tooling (validate, scaffold, index)
 └── .github/                  # Issue & PR templates, CI
 ```
@@ -67,19 +70,19 @@ awesome-skills/
 
 Initial taxonomy (counts will fill in as skills land):
 
-| Category                                       | Skills |
-| ---------------------------------------------- | -----: |
-| [Git & GitHub](skills/git-and-github/)         |      0 |
-| [Coding & IDE](skills/coding-and-ide/)         |      0 |
-| [Browser & Automation](skills/browser-automation/) | 0 |
-| [Web & Frontend](skills/web-frontend/)         |      0 |
-| [DevOps & Cloud](skills/devops-cloud/)         |      0 |
-| [Productivity](skills/productivity/)           |      0 |
-| [Data & Analytics](skills/data-analytics/)     |      0 |
-| [PDF & Documents](skills/pdf-documents/)       |      0 |
-| [Communication](skills/communication/)         |      0 |
-| [Search & Research](skills/search-research/)   |      0 |
-| [CLI Utilities](skills/cli-utilities/)         |      0 |
+| Category                                              | Skills |
+| ----------------------------------------------------- | -----: |
+| [Git & GitHub](categories/git-and-github/)            |      0 |
+| [Coding & IDE](categories/coding-and-ide/)            |      0 |
+| [Browser & Automation](categories/browser-automation/)|      0 |
+| [Web & Frontend](categories/web-frontend/)            |      0 |
+| [DevOps & Cloud](categories/devops-cloud/)            |      0 |
+| [Productivity](categories/productivity/)              |      0 |
+| [Data & Analytics](categories/data-analytics/)        |      0 |
+| [PDF & Documents](categories/pdf-documents/)          |      0 |
+| [Communication](categories/communication/)            |      0 |
+| [Search & Research](categories/search-research/)      |      0 |
+| [CLI Utilities](categories/cli-utilities/)            |      0 |
 
 Run `python scripts/list-skills.py --update-readme` to refresh these counts after a new skill is merged.
 

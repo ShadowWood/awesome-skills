@@ -7,14 +7,14 @@ Checks performed:
      - `name` is kebab-case, ≤64 chars, matches the directory name.
      - `description` is ≤1024 chars and non-empty.
      - SKILL.md body is ≤500 lines.
-  3. The skill sits under skills/<allowed-category>/<name>/.
+  3. The skill sits under categories/<allowed-category>/<name>/.
   4. If scripts/ exists:
        - Each executable script has a matching test file in tests/.
        - Either requirements.txt (Python) or package.json (Node/TS) is present.
        - requirements.txt mentions pytest, or package.json defines `"test"`.
 
 Usage:
-  python scripts/validate-skill.py skills/<category>/<name>
+  python scripts/validate-skill.py categories/<category>/<name>
   python scripts/validate-skill.py SKILL_TEMPLATE
   python scripts/validate-skill.py --all
 """
@@ -210,14 +210,14 @@ def check_location(skill_dir: Path) -> str | None:
     parts = rel.parts
 
     if parts[0] == "SKILL_TEMPLATE":
-        return None  # Template lives outside skills/.
-    if parts[0] != "skills":
+        return None  # Template lives outside categories/.
+    if parts[0] != "categories":
         raise ValidationError(
-            f"skill directory must live under skills/<category>/<name>, got {rel}"
+            f"skill directory must live under categories/<category>/<name>, got {rel}"
         )
     if len(parts) != 3:
         raise ValidationError(
-            f"expected skills/<category>/<name>, got {rel}"
+            f"expected categories/<category>/<name>, got {rel}"
         )
     category, name = parts[1], parts[2]
     if category not in ALLOWED_CATEGORIES:
@@ -253,10 +253,10 @@ def validate(skill_dir: Path) -> list[str]:
 
 def iter_skill_dirs() -> list[Path]:
     paths: list[Path] = []
-    skills_root = REPO_ROOT / "skills"
-    if skills_root.exists():
-        for category in sorted(skills_root.iterdir()):
-            if not category.is_dir():
+    categories_root = REPO_ROOT / "categories"
+    if categories_root.exists():
+        for category in sorted(categories_root.iterdir()):
+            if not category.is_dir() or category.name.startswith("."):
                 continue
             for child in sorted(category.iterdir()):
                 if child.is_dir() and not child.name.startswith("."):

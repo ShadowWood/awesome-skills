@@ -13,10 +13,10 @@ This document is the **single source of truth** for how a skill must be structur
 
 ## 1. Directory layout
 
-Every skill is a directory under `skills/<category>/<skill-name>/`. The required layout:
+Every skill is a directory under `categories/<category>/<skill-name>/`. The required layout:
 
 ```
-skills/<category>/<skill-name>/
+categories/<category>/<skill-name>/
 ├── SKILL.md              # REQUIRED — main agent-facing instructions
 ├── README.md             # REQUIRED — human-facing summary, install & usage
 ├── reference.md          # OPTIONAL — deep reference docs (progressive disclosure)
@@ -173,10 +173,10 @@ From the repo root:
 
 ```bash
 # 1. Structural and frontmatter check (and script↔test mapping)
-python scripts/validate-skill.py skills/<category>/<skill-name>
+python scripts/validate-skill.py categories/<category>/<skill-name>
 
 # 2. Run the skill's own tests
-cd skills/<category>/<skill-name>
+cd categories/<category>/<skill-name>
 pytest -q          # for Python skills
 # or
 npm install && npm test   # for Node skills
