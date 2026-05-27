@@ -52,3 +52,12 @@ coverage/
 .DS_Store
 Thumbs.db
 Desktop.ini
+.rlcr/
+.humanize/
+.claude/
+.codex/
+.gemini/
+.opencode/
+.cursor/
+.turbo/
+.next/
